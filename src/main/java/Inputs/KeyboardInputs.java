@@ -1,5 +1,8 @@
 package Inputs;
-import Interface_Adapters.*;
+import Interface_Adapters.PlayerControllers.PlayerMovementController;
+import Interface_Adapters.VisualControllers.PauseGameController;
+import Interface_Adapters.VisualControllers.ShowMapController;
+import Interface_Adapters.VisualControllers.ShowStatsController;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -15,17 +18,14 @@ public class KeyboardInputs implements KeyListener {
     ShowMapController showMapController;
     PlayerMovementController playerMovementController;
     ShowStatsController showStatsController;
-    AttackController attackController;
 
 
     public KeyboardInputs(PauseGameController pauseGameController, ShowMapController showMapController,
-                          ShowStatsController showStatsController, PlayerMovementController playerMovementController,
-                          AttackController attackController){
+                          ShowStatsController showStatsController, PlayerMovementController playerMovementController){
         this.pauseGameController = pauseGameController;
         this.showMapController = showMapController;
         this.showStatsController = showStatsController;
         this.playerMovementController = playerMovementController;
-        this.attackController = attackController;
     }
 
     @Override
@@ -58,15 +58,13 @@ public class KeyboardInputs implements KeyListener {
                 showStatsController.showStats();
             }
             case KeyEvent.VK_SPACE -> {
-                attackController.playerAttack();
+                // ATTACK GOES HERE
             }
 
         }
     }
-    //TODO: Abu
-    // - Remove Player from gamePanel
-    // - Implement CLEAN way of changing velocity following SOLID PRINCIPLES
-//    @Override
+
+    @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
 

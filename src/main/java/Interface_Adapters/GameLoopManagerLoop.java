@@ -1,6 +1,9 @@
 package Interface_Adapters;
 
-import Frameworks.GameWindow;
+import Frameworks.Display.GameWindow;
+import Interface_Adapters.EnemyControllers.CreateEnemyController;
+import Interface_Adapters.PlayerControllers.PlayerMovementController;
+import Interface_Adapters.VisualControllers.GameScreenPresenter;
 import Use_Cases.GameLoopInteractorReference;
 
 /**
@@ -27,20 +30,19 @@ public class GameLoopManagerLoop implements Runnable, GameLoopInteractorReferenc
     UpdateScreenBoundary screenModel;
     PlayerMovementController playerMovementController;
     CreateEnemyController createEnemyController;
-    AttackController attackController;
 
     /**
      * Initializing GameLoopManager using the presenters and controller it interacts with.
      */
     public GameLoopManagerLoop(GameScreenPresenter gameScreenPresenter, PlayerMovementController playerMovementController,
-                               CreateEnemyController createEnemyController, AttackController attackController){
+                               CreateEnemyController createEnemyController){
         this.gameScreenPresenter = gameScreenPresenter;
         this.playerMovementController = playerMovementController;
         this.createEnemyController = createEnemyController;
+
         screenModel = gameScreenPresenter.create();
         new GameWindow(screenModel);
         screenModel.requestFocus();
-        this.attackController = attackController;
     }
 
     public void start(){
@@ -52,10 +54,9 @@ public class GameLoopManagerLoop implements Runnable, GameLoopInteractorReferenc
      */
     public void update(){
         playerMovementController.update();
+
         createEnemyController.updateMapLocation(playerMovementController.getVisualX(),
                 playerMovementController.getVisualY());
-        attackController.update();
-
     }
 
     /**
