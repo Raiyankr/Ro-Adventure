@@ -7,7 +7,6 @@ import Use_Cases.StatBarsResponseModel;
  * Presenter that retrieves the Player's current health, attack, and speed
  */
 public class StatBarsPresenter implements StatBarsPresenterBoundary {
-
     final StatBarsInputBoundary statBarsInteractor;
 
     public StatBarsPresenter(StatBarsInputBoundary statBarsInteractor){
@@ -27,5 +26,4 @@ public class StatBarsPresenter implements StatBarsPresenterBoundary {
         return new int[] {statData.getMaxHealth(), statData.getCurrentHealth(),
                 statData.getAttack(), statData.getSpeed()};
     }
-
 }

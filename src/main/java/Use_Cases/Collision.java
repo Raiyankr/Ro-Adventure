@@ -1,12 +1,23 @@
 package Use_Cases;
 
 import java.awt.*;
-import java.util.ArrayList;
 
+/**
+ * Contains the location of the walls and also creates
+ * a layout of the walls allows for collision
+ */
 public class Collision {
-    private Rectangle[] wallLayout = new Rectangle[60];
-    private int[][] vWalls = {{0,1,1},{0,4,1},{1,1,0},{1,2,1},{1,3,1},{1,4,0},{2,0,1},{2,1,0},{2,2,1},{2,3,0},{2,4,1},{3,0,1},{3,1,1},{3,3,1}};
-    private int[][] hWalls = {{2,0,1},{0,1,1},{1,1,1},{2,1,0},{0,2,1},{1,2,0},{2,2,1},{1,3,0},{2,3,1},{1,4,0},{0,4,1},{2,4,1},{0,5,1},{1,5,1}};
+    private final Rectangle[] wallLayout = new Rectangle[60];
+    private final int[][] vWalls = {{0,1,1},{0,4,1},{1,1,0},{1,2,1},{1,3,1},{1,4,0},{2,0,1},{2,1,0},
+            {2,2,1},{2,3,0},{2,4,1},{3,0,1},{3,1,1},{3,3,1}};
+    private final int[][] hWalls = {{2,0,1},{0,1,1},{1,1,1},{2,1,0},{0,2,1},{1,2,0},{2,2,1},{1,3,0},
+            {2,3,1},{1,4,0},{0,4,1},{2,4,1},{0,5,1},{1,5,1}};
+    /**
+     * Helper method that Creates a layer of invisible rectangles that represents the walls.
+     * used by either enemy and player to see if they collide with the walls.
+     * @param xDelta: the current x location of the map
+     * @param yDelta: the current y location of the map
+     */
     public void createWallLayout(int xDelta, int yDelta) {
         int zeroX = xDelta + 2546 - 1265;
         int zeroY = yDelta + 2132 - 1410;
@@ -34,6 +45,9 @@ public class Collision {
             }
         }
     }
+    /**
+     * Checks if given x and y can move when we add the change x and y all with the given width and height
+     */
     public boolean moveAbleWall(int currX, int currY, int changeX, int changeY, int width, int height) {
         boolean move = true;
         boolean helper = true;

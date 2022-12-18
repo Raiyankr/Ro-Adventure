@@ -6,15 +6,7 @@ import Entities.RangedEnemy;
 import java.util.HashMap;
 
 public class RemoveEnemyInteractor {
-    private HashMap<String, MeleeEnemy> meleeEnemies;
-    private HashMap<String, RangedEnemy> rangedEnemies;
-
-    RemoveEnemyInteractor(HashMap<String, MeleeEnemy> meleeEnemies, HashMap<String, RangedEnemy> rangedEnemies){
-        this.meleeEnemies = meleeEnemies;
-        this.rangedEnemies = rangedEnemies;
-    }
-
-    public boolean removeEnemy(String enemyName){
+    public static boolean removeEnemy(String enemyName, HashMap<String, MeleeEnemy> meleeEnemies, HashMap<String, RangedEnemy> rangedEnemies){
         if(enemyName.charAt(0) == 'M'){
             meleeEnemies.remove(enemyName);
             return true;

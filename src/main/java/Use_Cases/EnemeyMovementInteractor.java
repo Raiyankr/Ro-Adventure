@@ -1,37 +1,24 @@
 package Use_Cases;
 
+import java.awt.*;
+
 public class EnemeyMovementInteractor implements EnemyMovementInputBoundary{
     EnemyMovement enemyMovement;
     public EnemeyMovementInteractor(EnemyMovement enemyMovement) {
         this.enemyMovement = enemyMovement;
     }
+
     @Override
-    public int getHelperX() {
-        return enemyMovement.getHelperX();
+    public int getVelX(int enemyHelperX, int playerX) {
+        return enemyMovement.getVelX(enemyHelperX, playerX);
     }
 
     @Override
-    public int getHelperY() {
-        return enemyMovement.getHelperY();
+    public int getVelY(int enemyHelperY, int playerY) {
+        return enemyMovement.getVelY(enemyHelperY, playerY);
     }
-
     @Override
-    public int getVisualX() {
-        return enemyMovement.getVisualX();
-    }
-
-    @Override
-    public int getVisualY() {
-        return enemyMovement.getVisualY();
-    }
-
-    @Override
-    public void updateX() {
-        enemyMovement.updateX();
-    }
-
-    @Override
-    public void updateY() {
-        enemyMovement.updateY();
+    public double getDistance(int enemyHelperX, int enemyHelperY, int targetX, int targetY) {
+        return enemyMovement.getDistance(enemyHelperX, enemyHelperY, targetX, targetY);
     }
 }

@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class LoadLevelImage {
+    /**
+     * This class is designated to import all the level images and returning an array of BufferedImage.
+     * This is a helper class to help clean our GamePanel.
+     */
     public static BufferedImage[] importImage() {
         BufferedImage[] imageList = new BufferedImage[11];
 
@@ -55,7 +59,6 @@ public class LoadLevelImage {
                 e.printStackTrace();
             }
         }
-
         return imageList;
     }
 }

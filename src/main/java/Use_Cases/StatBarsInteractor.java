@@ -17,6 +17,6 @@ public class StatBarsInteractor implements StatBarsInputBoundary{
      */
     public StatBarsResponseModel getStats() {
         return (new StatBarsResponseModel(player.getMaxHealth(), player.getCurrentHealth(),
-                player.getAttack(), 2)); // TODO: Take the actual speed from the PlayerMovementController
+                player.getAttack(), player.getSpeed())); // TODO: Take the actual speed from the PlayerMovementController
     }
 }

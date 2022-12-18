@@ -1,81 +1,45 @@
 package Entities;
 
 import Frameworks.GamePanel;
+
 import java.awt.*;
-import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-//import static Entities.MonsterConstants.*;
+public abstract class Enemy {
+    public abstract int getVisualX();
+    public abstract int getVisualY();
+    public abstract int getHelperX();
+    public abstract int getHelperY();
+    public abstract int getHealth();
+    public abstract void setHealth(int health);
+    public abstract int getDMG();
+    public abstract void changeHelperX(int x);
+    public abstract void changeHelperY(int y);
+    public abstract Rectangle getHitBox();
+    public abstract void setAnimations(BufferedImage[][] animations);
+    public abstract BufferedImage[][] getAnimations();
 
-public class Enemy{
-    protected GamePanel gamePanel;
-    protected int xEnemy;
-    protected int yEnemy;
-    protected double distance;
-    protected int velX = 0, velY = 0;
-    protected int spawnX, spawnY;
-//    protected Rectangle hitBox;
+    public boolean attacking = false, hit = false;
 
-    protected int aniTick, aniSpeed = 10;
-    protected int aniIndex;
-
-    // for attack methods
-    protected Ellipse2D.Float hitBox, attackHitBox;
-    protected int currentHealth;
-    protected int maxHealth;
-    protected int enemyState;
-    public int PLAYER_ATTACK_DAMAGE;  // TODO: make this an attribute of player class
-
-    public Enemy(GamePanel gamePanel, int x, int y, int spawnX, int spawnY) {
-        this.gamePanel = gamePanel;
-        this.spawnY = spawnY;
-        this.spawnX = spawnX;
-        this.xEnemy = x + this.spawnX;
-        this.yEnemy = y + this.spawnY;
-
-        // added for attack methods
-        maxHealth = 50;  // set enemy's max health
-        initHitBoxAttack();
+    public void setAttacking(boolean value) {
+        this.attacking = value;
+    }
+    public boolean getAttacking() {
+        return attacking;
+    }
+    public void setHit(boolean value) {
+        this.hit = value;
+    }
+    public boolean getHit() {
+        return hit;
     }
 
-    // change hitbox shape to an ellipse
-    public Ellipse2D.Float getHitBox() {
-//        hitBox = new Ellipse2D.Float(spawnX - 1280 + 4, spawnY - 720 + 4, 24, 24);// adjusted the monster hitbox sizes
-        hitBox = new Ellipse2D.Float(spawnX - 1280 + 4, spawnY - 720 + 4, 48, 48);
-        return hitBox;
-    }
-
-    protected int enemyMoveHelper(int c, int targetC) {
-        if (c < targetC) {
-            return -1;
-        } else if (c == targetC) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
-    public int getXEnemy() {return this.xEnemy;}
-    public int getYEnemy() {return this.yEnemy;}
-    public void changeXEnemy(int x) {this.xEnemy += x;}
-    public void changeYEnemy(int y) {this.yEnemy += y;}
-
-
-
-    private void initHitBoxAttack() {
-        attackHitBox = new Ellipse2D.Float(xEnemy, yEnemy, 29, 29);
-    }
-
-    protected void updateHitBoxAttack() {
-        attackHitBox.x = xEnemy;
-        attackHitBox.y = yEnemy;
-    }
-
-    public void drawMonsterHitBox(Graphics g) {
-        g.setColor(Color.red);
-        g.drawOval((int) attackHitBox.x, (int) attackHitBox.y, (int) attackHitBox.width, (int) attackHitBox.height);
-    }
+    public abstract Ellipse2D.Float getAttackHitRadius();
+    public abstract Ellipse2D.Float getAttackRadius();
+    public abstract void drawMonsterHitRadius(Graphics g);
+    public abstract void updateAttackHitRadius();
+    public abstract void drawMonsterAttackRadius(Graphics g);
 
 }
-

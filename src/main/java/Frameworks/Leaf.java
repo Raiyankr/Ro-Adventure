@@ -2,6 +2,9 @@ package Frameworks;
 
 import java.util.Random;
 
+/**
+ * This class creates Leaf instances for pure visual purposes.
+ */
 public class Leaf {
     private int x = randomCoord(), y = 0;
 

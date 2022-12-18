@@ -1,41 +1,33 @@
 package Use_Cases;
 
-public class EnemyMovement extends Movement{
-    private int spawnX, spawnY;
-    private int xEnemy, yEnemy;
-    public EnemyMovement(int xEnemy, int yEnemy, int spawnX, int spawnY) {
-        this.spawnY = spawnY;
-        this.spawnX = spawnX;
-        this.xEnemy = xEnemy;
-        this.yEnemy = yEnemy;
+import Entities.MeleeEnemy;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+public class EnemyMovement{
+    public int getVelX(int enemyHelperX, int playerX) {
+        int velX;
+        velX = enemyMoveHelper(enemyHelperX - 1280,playerX);
+        return velX;
     }
-    @Override
-    public void updateX() {
-
+    public int getVelY(int enemyHelperY, int playerY) {
+        int velY;
+        velY = enemyMoveHelper(enemyHelperY - 720,playerY);
+        return velY;
     }
-
-    @Override
-    public void updateY() {
-
+    private int enemyMoveHelper(int c, int targetC) {
+        if (c < targetC) {
+            return -1;
+        } else if (c == targetC) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
-
-    @Override
-    public int getVisualX() {
-        return xEnemy;
-    }
-
-    @Override
-    public int getVisualY() {
-        return yEnemy;
-    }
-
-    @Override
-    public int getHelperX() {
-        return spawnX;
-    }
-
-    @Override
-    public int getHelperY() {
-        return spawnY;
+    public double getDistance(int enemyHelperX, int enemyHelperY, int targetX, int targetY) {
+        return Math.sqrt((Math.pow((targetX  - enemyHelperX + 1287),2)
+                + Math.pow((targetY - enemyHelperY + 720 ), 2)));
     }
 }

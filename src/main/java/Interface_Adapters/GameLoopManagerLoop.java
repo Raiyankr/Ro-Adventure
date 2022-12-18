@@ -1,7 +1,6 @@
 package Interface_Adapters;
 
 import Frameworks.GameWindow;
-import Frameworks.PlayerAnimationImport;
 import Use_Cases.GameLoopInteractorReference;
 
 /**
@@ -24,40 +23,44 @@ public class GameLoopManagerLoop implements Runnable, GameLoopInteractorReferenc
     private static boolean showMinimap = false;
     private static boolean showStats = false;
 
-    // Dependency Injection
     GameScreenPresenter gameScreenPresenter;
     UpdateScreenBoundary screenModel;
     PlayerMovementController playerMovementController;
+    CreateEnemyController createEnemyController;
+    AttackController attackController;
 
-    public GameLoopManagerLoop(GameScreenPresenter gameScreenPresenter, PlayerMovementController playerMovementController){
+    /**
+     * Initializing GameLoopManager using the presenters and controller it interacts with.
+     */
+    public GameLoopManagerLoop(GameScreenPresenter gameScreenPresenter, PlayerMovementController playerMovementController,
+                               CreateEnemyController createEnemyController, AttackController attackController){
         this.gameScreenPresenter = gameScreenPresenter;
         this.playerMovementController = playerMovementController;
+        this.createEnemyController = createEnemyController;
         screenModel = gameScreenPresenter.create();
         new GameWindow(screenModel);
-        // TODO: Raiyan
-        //  - DON'T DO THIS BROOO
-        //gamePanel = new GamePanel();
-
-        // Focuses on what is happening here
         screenModel.requestFocus();
-
+        this.attackController = attackController;
     }
 
     public void start(){
         startGameLoop();
     }
 
+    /**
+     * Update the player's location whenever the player moves, based on the designated controller
+     */
     public void update(){
-        //TODO: KUSHIL
-        // Move these to EnemyManager
-
-        //TODO: Raiyan
-        // Clean this - Don't Directly call UpdateGame()
-        // gamePanel.updateGame();
-
         playerMovementController.update();
+        createEnemyController.updateMapLocation(playerMovementController.getVisualX(),
+                playerMovementController.getVisualY());
+        attackController.update();
+
     }
 
+    /**
+     * Redrawing everything in our Jpanel to update any changes
+     */
     public void reDraw(){
         gameScreenPresenter.update();
     }
@@ -67,6 +70,7 @@ public class GameLoopManagerLoop implements Runnable, GameLoopInteractorReferenc
         gameThread.start();
     }
 
+    // returns game time
     public static int getGameTimerSeconds(){
         return (int) ((int)(gameTimerSeconds - startTime) / 1000F);
     }
@@ -91,19 +95,20 @@ public class GameLoopManagerLoop implements Runnable, GameLoopInteractorReferenc
         showStats = !showStats;
     }
 
-    // Main game loop
+    /**
+     * This method represents the game-loop:
+     * - It keeps track of game time,
+     * - Calls update() and reDraw() methods.
+     */
     @Override
     public void run() {
 
         double timePerFrame = 1000000000.0 / FPS_SET;
-        long lastCheck = System.currentTimeMillis();
         double deltaF = 0;
-        int frames = 0;
 
         double timePerUpdate = 1000000000.0 / UPS_SET;
         long previousTime = System.nanoTime();
         double deltaU = 0;
-        int update = 0;
 
 
         while(true){
@@ -113,10 +118,6 @@ public class GameLoopManagerLoop implements Runnable, GameLoopInteractorReferenc
             deltaF += (currentTime - previousTime) / timePerFrame;
             previousTime = currentTime;
 
-            //TODO: Raiyan
-            // Create usecase for:
-            //      PauseGame
-
             if (deltaU >= 1){
                 // Only update if the game is not paused
                 if (!getIsPaused()){
@@ -125,7 +126,6 @@ public class GameLoopManagerLoop implements Runnable, GameLoopInteractorReferenc
                 }else{
                     pauseTime = System.currentTimeMillis() - gameTimerSeconds;
                 }
-                update++;
                 deltaU--;
             }
 
@@ -134,16 +134,7 @@ public class GameLoopManagerLoop implements Runnable, GameLoopInteractorReferenc
                 if (!getIsPaused()){
                     reDraw();
                 }
-                frames++;
                 deltaF--;
-            }
-
-            // Display Stats
-            if (System.currentTimeMillis() - lastCheck >= 1000){
-                lastCheck = System.currentTimeMillis();
-                //System.out.println("FPS: " + frames + " | UPS: " + update);
-                frames= 0;
-                update = 0;
             }
         }
     }

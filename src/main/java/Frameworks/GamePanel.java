@@ -1,14 +1,9 @@
 package Frameworks;
 
-import Entities.MeleeEnemy;
-import Entities.Player;
+import Entities.Enemy;
 import Inputs.KeyboardInputs;
 import Inputs.MouseInputs;
 import Interface_Adapters.*;
-
-//TODO: Kevin
-//  - This can't be here
-import Entities.ShopSystem;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,29 +13,22 @@ import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements UpdateScreenBoundary {
 
+    // Stats bar constants
     final int MAX_HEALTH = 0;
     final int CURRENT_HEALTH = 1;
     final int STRENGTH = 2;
     final int SPEED = 3;
-    //TODO: Abu
-    //  - Can't directly have access to Player
-    public Player player;
 
-
-    // TODO: Kevin
-    //  - Implement shop system CLEAN way
-    //  - Can't have access to shop directly
-    private ShopSystem gameShop;
     private JLabel timerGui;
+
 
     StatBarsPresenterBoundary statBarsPresenterBoundary;
 
+    private WriteToBoardController writeToBoardController;
     private boolean showStatBar = true;
-
     private ArrayList<Leaf> leafList = new ArrayList<>();
 
-    //TODO: Raiyan
-    //  - Import these images separately
+
     private BufferedImage map;
     private BufferedImage minimap;
     private BufferedImage minimapCursor;
@@ -51,62 +39,59 @@ public class GamePanel extends JPanel implements UpdateScreenBoundary {
     // Variables for shop system GUI
     private BufferedImage shopKeeper;
     private BufferedImage healthPotion;
-
     private BufferedImage statsBar;
     private BufferedImage healthBar;
     private BufferedImage timerPill;
     private BufferedImage buffbar;
 
-    //TODO: Kevin
-    //  - import the potion images
 
-    //TODO: Abu, Khushil
-    //  -Move enemyList to Enemy Manager
-    private MeleeEnemy[] enemyList;
-    public MeleeEnemy enemyOne;
-    public MeleeEnemy enemyTwo;
-
-    // THIS IS GOOD STUFF
-    PauseGameController pauseGameController;
+    // GamePanel uses these controllers to call different use-cases
     ShowMapController showMapController;
-    PlayerMovementController playerMovementController;
     ShowStatsController showStatsController;
+    PauseGameController pauseGameController;
+    PlayerMovementController playerMovementController;
+
+    CreateEnemyController createEnemyController;
+    AttackController attackController;
+
 
     public GamePanel(){
+        setTimerGui();
+        importImage();
         // Adding leaves
         leafList.add(new Leaf());
         leafList.add(new Leaf());
-        setTimerGui();
-        importImage();
         this.setBackground(new Color(0, 0, 0));
-
-        // Initializing methods
-        // Creates shop instance
-        //TODO: Kevin
-        //  - Create the shop using CLEAN arch
-        //  - Can't do this in GamePanel
-/*
-        gameShop = new ShopSystem(player);
-*/
-
     }
 
-
+    /**
+     * This method is designated to initialize all the controllers and presenters that will be used to perform various
+     * use-cases.
+     */
     public void setUp(PauseGameController pauseGameController, ShowMapController showMapController,
                       StatBarsPresenterBoundary statBarsPresenterBoundary, ShowStatsController showStatsController, 
-                      PlayerMovementController playerMovementController){
+                      PlayerMovementController playerMovementController, AttackController attackController,
+                      CreateEnemyController createEnemyController){
+
         this.pauseGameController = pauseGameController;
         this.showMapController = showMapController;
         this.showStatsController = showStatsController;
         this.statBarsPresenterBoundary = statBarsPresenterBoundary;
         this.playerMovementController = playerMovementController;
 
-        // TODO: Pass in KeyboardInputController instead of GamePanel
+        this.writeToBoardController = writeToBoardController;
+        this.createEnemyController = createEnemyController;
+        this.attackController = attackController;
+
         addKeyListener(new KeyboardInputs(pauseGameController, showMapController,
-                showStatsController, playerMovementController));
+                showStatsController, playerMovementController, attackController));
+
         addMouseListener(new MouseInputs(this));
     }
 
+    /**
+     * Initialize the timer GUI
+     */
     private void setTimerGui(){
         timerGui = new JLabel(String.valueOf(120));
         timerGui.setBounds(605, -19, 100, 100);
@@ -114,6 +99,10 @@ public class GamePanel extends JPanel implements UpdateScreenBoundary {
         timerGui.setForeground(new Color(150, 203, 187));
         add(timerGui);
     }
+
+    /**
+     * Changing the Timer Gui-text based on updated time
+     */
     private void changeTimerGui(){
         timerGui.setBounds(605, -19, 100, 100);
         timerGui.setHorizontalAlignment(0);
@@ -123,17 +112,11 @@ public class GamePanel extends JPanel implements UpdateScreenBoundary {
             timerGui.setForeground(new Color(255, 81, 81, 194));
         }
         timerGui.setText(String.valueOf(120 - GameLoopManagerLoop.getGameTimerSeconds()));
-
     }
 
-    //TODO: Khushil
-    //  - Move this to Enemy Manager Class
-    public MeleeEnemy[] getEnemyList() {
-        return this.enemyList;
-    }
-
-    // TODO: Raiyan
-    //  - Move this entire class to a separate class to import images
+    /**
+     * Initialling the level image by calling
+     */
     private void importImage() {
         BufferedImage[] imageList = LoadLevelImage.importImage();
         map = imageList[0];
@@ -174,6 +157,7 @@ public class GamePanel extends JPanel implements UpdateScreenBoundary {
     // This is for drawing stuff
     public void paintComponent(Graphics g){
         super.paintComponent(g);
+
         //Drawing the basic map
         g.drawImage(map, playerMovementController.getVisualX(), playerMovementController.getVisualY(), null);
 
@@ -182,11 +166,10 @@ public class GamePanel extends JPanel implements UpdateScreenBoundary {
         g.drawImage(playerMovementController.getCurrAnimation(), 616, 326, 48,48, null);
 
         //Enemy visual goes here
-        //TODO: Abu - Access player and enemy through an interface using CLEAN way
-/*
-        g.drawImage(player.getCurrentImage(), enemyOne.getXEnemy(), enemyOne.getYEnemy(), null);
-        g.drawImage(player.getCurrentImage(), enemyTwo.getXEnemy(), enemyTwo.getYEnemy(), null);
-*/
+        ArrayList<ArrayList> enemyInfo = this.createEnemyController.getEnemyInfo();
+        for (ArrayList i : enemyInfo){
+            g.drawImage(playerMovementController.getCurrAnimation(), (int)i.get(1), (int) i.get(2), 36,36, null);
+        }
 
 
         //TODO: Kevin
@@ -194,11 +177,12 @@ public class GamePanel extends JPanel implements UpdateScreenBoundary {
 
         // SHOP VISUAL GOES HERE
 /*
-        g.drawImage(shopKeeper, xDelta + 1857, yDelta + 1676, null);
+
         if (gameShop.getItemList().contains("Health Potion")){
             g.drawImage(healthPotion, xDelta + 1857, yDelta + 1726, null);
         }
 */
+        g.drawImage(shopKeeper, playerMovementController.getVisualX() + 1857, playerMovementController.getVisualY() + 1676, null);
 
         g.drawImage(bushes, playerMovementController.getVisualX(), playerMovementController.getVisualY(), null);
 
@@ -231,7 +215,21 @@ public class GamePanel extends JPanel implements UpdateScreenBoundary {
         //  - Don't directly call a method from gameShop.
 /*
         gameShop.checkLocation();
+
 */
+        // for debugginh attack methods!!!
+        attackController.drawPlayerAttackRadius(g);
+        attackController.drawPlayerHitRadius(g);
+        attackController.drawMonstersHitRadius(g);
+        attackController.drawMonstersAttackRadius(g);
+        ArrayList<Enemy> e = createEnemyController.createEnemyInputBoundary.getEnemies();
+        Enemy e1 = e.get(0);
+        Enemy e2 = e.get(1);
+
+        g.drawOval(e1.getVisualX(), e1.getVisualY(), 36, 36);
+        g.drawOval(e2.getVisualX(), e2.getVisualY(), 36, 36);
+
+        g.drawOval(e1.getVisualX(), e1.getVisualY(), 36, 36);  // Melee enemy
 
     }
 

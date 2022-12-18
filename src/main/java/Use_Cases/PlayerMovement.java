@@ -1,66 +1,124 @@
 package Use_Cases;
 
+import Entities.Player;
+
 import java.awt.image.BufferedImage;
 
-public class PlayerMovement extends Movement{
-
-    private int velX = 0, velY = 0;
+/**
+ * Use case for player movement
+ */
+public class PlayerMovement{
+    public Player player;
+    private boolean right, left, up, down;
+    private int idleDir = 0;
     private int aniTick, aniIndex, aniSpeed= 10;
     private int playerAction = 0;
     private boolean moving = false;
-
-    private int idleDir = 0;
-
-    private int currLocationX = -2546, currLocationY = -2132;
-    private int helperX = 1882, helperY = 1738;
-    private BufferedImage[][] animations;
-    public PlayerMovement(BufferedImage[][] animations) {
-        this.animations = animations;
+    private int speed;
+    public PlayerMovement(Player player) {
+        this.player = player;
     }
-
-    @Override
+    public int getVelX() {
+        if (left) {
+            return speed;
+        } else if (right) {
+            return -speed;
+        } else {
+            return 0;
+        }
+    }
+    public int getVelY() {
+        if (down) {
+            return -speed;
+        } else if (up) {
+            return speed;
+        } else {
+            return 0;
+        }
+    }
+    public void updateHelper() {
+        this.speed = player.getSpeed();
+        this.moving = player.getMoving();
+    }
     public void updateX() {
-        this.currLocationX += velX;
-        this.helperX -= velX;
+        if (left) {
+            player.changeVisualX(speed);
+            player.changeHelperX(speed);
+        } else if (right) {
+            player.changeVisualX(-speed);
+            player.changeHelperX(-speed);
+        }
     }
-    @Override
     public void updateY() {
-        this.currLocationY += velY;
-        this.helperY -= velY;
+        if (up) {
+            player.changeHelperY(speed);
+            player.changeVisualY(speed);
+        } else if (down) {
+            player.changeHelperY(-speed);
+            player.changeVisualY(-speed);
+        }
     }
-    public void setVelX(int x) {
-        this.velX = x;
+    public void rightActivator() {
+        this.right = true;
         this.setMoving();
     }
-    public void setVelY(int y) {
-        this.velY = y;
+    public void leftActivator() {
+        this.left = true;
+        this.setMoving();
+    }
+    public void upActivator() {
+        this.up = true;
+        this.setMoving();
+    }
+    public void downActivator() {
+        this.down = true;
+        this.setMoving();
+    }
+    public void rightDeactivator() {
+        this.right = false;
+        this.setMoving();
+    }
+    public void leftDeactivator() {
+        this.left = false;
+        this.setMoving();
+    }
+    public void upDeactivator() {
+        this.up = false;
+        this.setMoving();
+    }
+    public void downDeactivator() {
+        this.down = false;
         this.setMoving();
     }
     public void setMoving () {
-        if (velX != 0 || velY != 0) {
-            moving = true;
-        } else {moving = false;}
+        if (right || left || up || down) {
+            player.setMoving(true);
+        } else {player.setMoving(false);}
     }
-
     //Getting locations
     public int getVisualX() {
-        return currLocationX;
+        return player.getVisualX();
     }
     public int getVisualY() {
-        return currLocationY;
+        return player.getVisualY();
     }
     public int getHelperX() {
-        return helperX;
+        return player.getHelperX();
     }
     public int getHelperY() {
-        return helperY;
+        return player.getHelperY();
     }
-
-    private void setAnimation() {
+    public void setAnimations(BufferedImage[][] animations) {
+        player.setAnimations(animations);
+    }
+    public BufferedImage[][] getAnimations() {
+        return player.getAnimations();
+    }
+    private void updateAnimation() {
         if (moving) {
-            if ((velX == -2 & velY == -2) || (velX == -2 & velY == 2) || (velX == -2)) { //Left movement
+            if ((right & up) || (right & down) || (right)) {
                 playerAction = 3;
-            } else if ((velX == 2 & velY == -2) || (velX == 2 & velY == 2)|| (velX == 2)) { //Right movement
+            } else if ((left & up) || (left & down)|| (left)) {
                 playerAction = 2;
             } //Needs testing for up and down
         } else {
@@ -70,6 +128,13 @@ public class PlayerMovement extends Movement{
                 playerAction = 1;
             }
         }
+
+//        if (player.getAttacking()) {
+//            playerAction = 4;
+//        }
+//        if (player.getHit()) {
+//            playerAction = 6;
+//        }
     }
     public void setIdleDirection(int dir) {
         this.idleDir = dir;
@@ -99,7 +164,12 @@ public class PlayerMovement extends Movement{
     }
     public BufferedImage getCurrentImage () {
         updateAnimationTick();
-        setAnimation();
-        return this.animations[playerAction][aniIndex];
+        updateAnimation();
+        return player.getAnimations()[playerAction][aniIndex];
     }
+
+    public boolean getRight() {
+        return right;
+    }
+
 }

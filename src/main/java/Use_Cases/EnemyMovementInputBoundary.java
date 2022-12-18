@@ -1,10 +1,10 @@
 package Use_Cases;
 
+import java.awt.*;
+
 public interface EnemyMovementInputBoundary {
-    int getHelperX();
-    int getHelperY();
-    int getVisualX();
-    int getVisualY();
-    void updateX();
-    void updateY();
+    int getVelX(int enemyHelperX, int playerX);
+    int getVelY(int enemyHelperY, int playerY);
+    double getDistance(int enemyHelperX, int enemyHelperY, int targetX, int targetY);
+
 }

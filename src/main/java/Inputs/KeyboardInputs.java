@@ -1,8 +1,5 @@
 package Inputs;
-import Interface_Adapters.PauseGameController;
-import Interface_Adapters.PlayerMovementController;
-import Interface_Adapters.ShowMapController;
-import Interface_Adapters.ShowStatsController;
+import Interface_Adapters.*;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -18,13 +15,17 @@ public class KeyboardInputs implements KeyListener {
     ShowMapController showMapController;
     PlayerMovementController playerMovementController;
     ShowStatsController showStatsController;
+    AttackController attackController;
+
 
     public KeyboardInputs(PauseGameController pauseGameController, ShowMapController showMapController,
-                          ShowStatsController showStatsController, PlayerMovementController playerMovementController){
+                          ShowStatsController showStatsController, PlayerMovementController playerMovementController,
+                          AttackController attackController){
         this.pauseGameController = pauseGameController;
         this.showMapController = showMapController;
         this.showStatsController = showStatsController;
         this.playerMovementController = playerMovementController;
+        this.attackController = attackController;
     }
 
     @Override
@@ -36,18 +37,17 @@ public class KeyboardInputs implements KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W -> {
-                playerMovementController.playerMoveY(2);
+                playerMovementController.upActivator();
             }
             case KeyEvent.VK_S -> {
-                playerMovementController.playerMoveY(-2);
+                playerMovementController.downActivator();
             }
             case KeyEvent.VK_D -> {
-                playerMovementController.playerMoveX(-2);
+                playerMovementController.rightActivator();
             }
             case KeyEvent.VK_A -> {
-                playerMovementController.playerMoveX(2);
+                playerMovementController.leftActivator();
             }
-
             case KeyEvent.VK_M -> {
                 showMapController.updateMap();
             }
@@ -57,27 +57,32 @@ public class KeyboardInputs implements KeyListener {
             case KeyEvent.VK_O-> {
                 showStatsController.showStats();
             }
+            case KeyEvent.VK_SPACE -> {
+                attackController.playerAttack();
+            }
 
         }
     }
-
-
     //TODO: Abu
     // - Remove Player from gamePanel
     // - Implement CLEAN way of changing velocity following SOLID PRINCIPLES
 //    @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_W, KeyEvent.VK_S -> {
-                playerMovementController.playerMoveY(0);
+
+            case KeyEvent.VK_W -> {
+                playerMovementController.upDeactivator();
+            }
+            case KeyEvent.VK_S -> {
+                playerMovementController.downDeactivator();
             }
             case KeyEvent.VK_D -> {
-                playerMovementController.playerMoveX(0);
+                playerMovementController.rightDeactivator();
                 playerMovementController.setIdleDirection(1);}
             case KeyEvent.VK_A -> {
-                playerMovementController.playerMoveX(0);
+                playerMovementController.leftDeactivator();
                 playerMovementController.setIdleDirection(0); }
-
+            }
         }
     }
-}
+

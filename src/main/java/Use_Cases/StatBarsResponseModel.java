@@ -22,12 +22,8 @@ public class StatBarsResponseModel {
     public int getCurrentHealth() {
         return currentHealth;
     }
-
     public int getAttack() {
         return attack;
     }
-
-    public int getSpeed() {
-        return speed;
-    }
+    public int getSpeed() { return speed; }
 }
