@@ -5,7 +5,6 @@ import Frameworks.Display.GamePanel;
 import Frameworks.VisualLoad.LoadPlayerAnimation;
 import Interface_Adapters.*;
 import Interface_Adapters.AnimationControllers.AnimationsImportController;
-import Interface_Adapters.CollisionControllers.CollisionController;
 import Interface_Adapters.EnemyControllers.CreateEnemyController;
 import Interface_Adapters.EnemyControllers.EnemyMovementController;
 import Interface_Adapters.PlayerControllers.PlayerMovementController;
@@ -14,9 +13,6 @@ import Interface_Adapters.VisualControllers.PauseGameController;
 import Interface_Adapters.VisualControllers.ShowMapController;
 import Interface_Adapters.VisualControllers.ShowStatsController;
 import Use_Cases.*;
-import Use_Cases.CollisionUseCases.Collision;
-import Use_Cases.CollisionUseCases.CollisionInputBoundary;
-import Use_Cases.CollisionUseCases.CollisionInteractor;
 import Use_Cases.EnemyUseCases.*;
 import Use_Cases.PlayerUseCases.PlayerMovement;
 import Use_Cases.PlayerUseCases.PlayerMovementInputBoundary;
@@ -40,16 +36,12 @@ public class MainClass {
         //TODO: Player takes parameters ABUUUU -> Don't forget to add player username
         Player player = new Player();
 
-        //Collisions set up
-        Collision collision = new Collision();
-        CollisionInputBoundary collisionInteractor = new CollisionInteractor(collision);
-        CollisionController collisionController = new CollisionController(collisionInteractor);
 
         LoadPlayerAnimation loadPlayerAnimation = new LoadPlayerAnimation();
         PlayerMovement playerMovement = new PlayerMovement(player);
         PlayerMovementInputBoundary playerMovementInteractor = new PlayerMovementInteractor(playerMovement);
         PlayerMovementController playerMovementController = new PlayerMovementController(
-                playerMovementInteractor, collisionController);
+                playerMovementInteractor);
         new AnimationsImportController(loadPlayerAnimation.getPlayerAnimations(), playerMovementController);
 
 
@@ -63,7 +55,7 @@ public class MainClass {
         EnemyMovement enemyMovement = new EnemyMovement();
         EnemyMovementInputBoundary enemyMovementInteractor = new EnemeyMovementInteractor(enemyMovement);
         EnemyMovementController enemyMovementController = new EnemyMovementController(enemyMovementInteractor,
-                playerMovementController, collisionController);
+                playerMovementController);
 
         //Create Enemies use-case
         CreateEnemyInputBoundary enemyManagerInteractor = new EnemyManagerHandler();

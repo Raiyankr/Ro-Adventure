@@ -1,6 +1,5 @@
 package Interface_Adapters.PlayerControllers;
 
-import Interface_Adapters.CollisionControllers.CollisionController;
 import Use_Cases.PlayerUseCases.PlayerMovementInputBoundary;
 
 import java.awt.image.BufferedImage;
@@ -9,47 +8,24 @@ import java.awt.image.BufferedImage;
  */
 public class PlayerMovementController {
     PlayerMovementInputBoundary playerMovementInputBoundary;
-    CollisionController collisionController;
     private boolean collide = false;
     /**
      * Connects the player movement controller to collision controller and all the enemy controller
      * Because we are working with those controllers
      */
-    public PlayerMovementController(PlayerMovementInputBoundary playerMovementInputBoundary,
-                                    CollisionController collisionController) {
+    public PlayerMovementController(PlayerMovementInputBoundary playerMovementInputBoundary) {
         this.playerMovementInputBoundary = playerMovementInputBoundary;
-        this.collisionController = collisionController;
     }
     /**
      * Update method will update the player movement every tick of game loop.
      * It checks for collision by calling the collision controller, and then sets a velocity
      */
     public void update() {
-
         playerMovementInputBoundary.updateHelper();
-        if (getMoveableWall(getVisualX(), getVisualY(), -playerMovementInputBoundary.getVelX(), 0)) {
-            playerMovementInputBoundary.updateX();
-        }
-        if (getMoveableWall(getVisualX(), getVisualY(), 0, -playerMovementInputBoundary.getVelY())) {
-            playerMovementInputBoundary.updateY();
-        }
+        playerMovementInputBoundary.updateX();
+        playerMovementInputBoundary.updateY();
     }
 
-    /**
-     * Calls the collision controller for player movement
-     * @param visualX: current x location on the map relative
-     * @param visualY: current y location on the map relative
-     * @param changeX: how much we want to change x by
-     * @param changeY: how much we want to change y by
-     * @return: return true iff  player is not touching the wall
-     */
-    public boolean getMoveableWall(int visualX, int visualY, int changeX, int changeY) {
-
-        return collisionController.movable(visualX, visualY, 628, 338, changeX, changeY, 24, 24);
-    }
-/*    public boolean getMoveableEnemies() {
-
-    }*/
 
     /**
      * @return the x coordinate that we need to present the player

@@ -3,14 +3,7 @@ package Use_Cases.PlayerUseCases;
 import java.awt.image.BufferedImage;
 
 public interface PlayerMovementInputBoundary {
-    void rightActivator();
-    void leftActivator();
-    void upActivator();
-    void downActivator();
-    void rightDeactivator();
-    void leftDeactivator();
-    void upDeactivator();
-    void downDeactivator();
+
     int getHelperX();
     int getHelperY();
     int getVelX();
@@ -24,4 +17,13 @@ public interface PlayerMovementInputBoundary {
     void setAnimations(BufferedImage[][] animations);
     BufferedImage[][] getAnimations();
     void updateHelper();
+
+    void rightActivator() ;
+    void leftActivator() ;
+    void upActivator() ;
+    void downActivator() ;
+    void rightDeactivator() ;
+    void leftDeactivator() ;
+    void upDeactivator() ;
+    void downDeactivator() ;
 }
